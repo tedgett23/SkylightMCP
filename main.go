@@ -69,7 +69,7 @@ func main() {
 	tools.Register(server, client)
 
 	handler := mcp.NewStreamableHTTPHandler(func(*http.Request) *mcp.Server { return server },
-		&mcp.StreamableHTTPOptions{Stateless: cfg.Server.Stateless})
+		&mcp.StreamableHTTPOptions{Stateless: *cfg.Server.Stateless})
 
 	mux := http.NewServeMux()
 	mux.Handle(cfg.Server.Path, requireToken(cfg.Server.AuthToken, handler))
@@ -85,7 +85,8 @@ func main() {
 	if cfg.Server.AuthToken == "" {
 		log.Warn("server.auth_token is empty: the MCP endpoint is unauthenticated")
 	}
-	log.Info("skylight-mcp listening", "addr", cfg.Server.Listen, "path", cfg.Server.Path)
+	log.Info("skylight-mcp listening", "addr", cfg.Server.Listen, "path", cfg.Server.Path,
+		"stateless", *cfg.Server.Stateless, "protocol_versions", mcp.SupportedProtocolVersions())
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Error("server", "err", err)
 		os.Exit(1)

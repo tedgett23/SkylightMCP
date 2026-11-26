@@ -22,7 +22,8 @@ type ServerConfig struct {
 	// AuthToken, when set, requires clients to send "Authorization: Bearer <token>".
 	AuthToken string `yaml:"auth_token"`
 	// Stateless disables MCP session tracking (each request is independent).
-	Stateless bool `yaml:"stateless"`
+	// Required for MCP protocol 2026-07-28, which is sessionless. Default true.
+	Stateless *bool `yaml:"stateless"`
 }
 
 type SkylightConfig struct {
@@ -62,6 +63,10 @@ func (c *Config) applyDefaults() {
 	}
 	def(&c.Server.Listen, ":8080")
 	def(&c.Server.Path, "/mcp")
+	if c.Server.Stateless == nil {
+		t := true
+		c.Server.Stateless = &t
+	}
 	def(&c.Skylight.AuthMethod, "auto")
 	def(&c.Skylight.BaseURL, "https://app.ourskylight.com")
 	def(&c.Skylight.APIVersion, "2026-10-15")

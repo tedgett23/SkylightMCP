@@ -8,8 +8,9 @@ server:
   # Generate one with: openssl rand -hex 32
   # (can also be set with the SKYLIGHT_MCP_AUTH_TOKEN env var)
   auth_token: ""
-  # true = no MCP session tracking (simpler behind load balancers).
-  stateless: false
+  # true (default) = sessionless. Required for MCP protocol 2026-07-28; older
+  # clients (2025-xx) still work. Set false only if you need legacy MCP sessions.
+  stateless: true
 
 skylight:
   # Your Skylight app login (or set SKYLIGHT_EMAIL / SKYLIGHT_PASSWORD env vars).
