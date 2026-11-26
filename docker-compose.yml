@@ -1,0 +1,22 @@
+services:
+  skylight-mcp:
+    build:
+      context: .
+      args:
+        VERSION: "0.1.0"
+    image: skylight-mcp:latest
+    container_name: skylight-mcp
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config.yaml:/config/config.yaml:ro
+      - skylight-data:/data          # persists the OAuth token cache
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  skylight-data:

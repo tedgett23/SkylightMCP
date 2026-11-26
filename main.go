@@ -31,7 +31,17 @@ For anything without a dedicated tool, use skylight_api_request.`
 func main() {
 	cfgPath := flag.String("config", "config.yaml", "path to config file")
 	check := flag.Bool("check", false, "log in, print the frame id, and exit")
+	health := flag.String("healthcheck", "", "probe this /healthz URL and exit 0 if healthy (for container HEALTHCHECK)")
 	flag.Parse()
+
+	if *health != "" {
+		hc := &http.Client{Timeout: 3 * time.Second}
+		resp, err := hc.Get(*health)
+		if err != nil || resp.StatusCode != http.StatusOK {
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
 
 	log := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelInfo}))
 	cfg, err := config.Load(*cfgPath)

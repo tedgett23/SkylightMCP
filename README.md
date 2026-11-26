@@ -21,6 +21,19 @@ claude mcp add --transport http skylight http://localhost:8080/mcp --header "Aut
 
 `GET /healthz` returns `ok`.
 
+## Docker
+
+Two-stage build: `golang:1.25-alpine` compiles a static `CGO_ENABLED=0` binary, which runs on `distroless/static` as a non-root user with no shell.
+
+```bash
+docker compose up -d --build        # uses ./config.yaml, token cache in the skylight-data volume
+# or
+docker build -t skylight-mcp .
+docker run -d -p 8080:8080 -v $PWD/config.yaml:/config/config.yaml:ro -v skylight-data:/data skylight-mcp
+```
+
+`server.listen` must be `:8080` (all interfaces), not `127.0.0.1:8080`. The image's HEALTHCHECK runs `skylight-mcp -healthcheck http://127.0.0.1:8080/healthz`.
+
 ## Auth
 
 `auth_method: auto` first tries the current app's OAuth + PKCE login: it fetches the login form, posts your credentials, catches the redirect code, and exchanges it for access and refresh tokens. If that fails it falls back to the legacy `POST /api/sessions` login with Basic auth. Tokens are cached in `token_cache` (mode 0600), refreshed when they expire, and renewed automatically on a 401.

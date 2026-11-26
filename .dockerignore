@@ -1,0 +1,8 @@
+# Never bake secrets or local artifacts into the image.
+config.yaml
+.skylight-token.json
+*.har
+skylight-mcp
+.git
+Dockerfile
+docker-compose.yml
