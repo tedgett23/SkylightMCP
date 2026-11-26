@@ -1,0 +1,35 @@
+# Copy to config.yaml and fill in. config.yaml is git-ignored.
+
+server:
+  # Address and path for the streamable HTTP MCP endpoint.
+  listen: ":8080"
+  path: "/mcp"
+  # Strongly recommended: clients must send "Authorization: Bearer <auth_token>".
+  # Generate one with: openssl rand -hex 32
+  # (can also be set with the SKYLIGHT_MCP_AUTH_TOKEN env var)
+  auth_token: ""
+  # true = no MCP session tracking (simpler behind load balancers).
+  stateless: false
+
+skylight:
+  # Your Skylight app login (or set SKYLIGHT_EMAIL / SKYLIGHT_PASSWORD env vars).
+  email: "you@example.com"
+  password: "your-skylight-password"
+
+  # Optional. Numeric frame id (the number in the web app URL). Auto-discovered if empty.
+  frame_id: ""
+
+  # Optional. IANA timezone for calendar queries/new events. Defaults to the frame's timezone, then UTC.
+  timezone: "America/New_York"
+
+  # auto = try OAuth (current app login, refreshable) then fall back to legacy /api/sessions.
+  # oauth | legacy force one method.
+  auth_method: auto
+
+  # Where access/refresh tokens are cached (written with 0600 permissions). "" disables caching.
+  token_cache: ".skylight-token.json"
+
+  # Advanced; defaults shown.
+  # base_url: "https://app.ourskylight.com"
+  # api_version: "2026-10-15"
+  # user_agent: "SkylightMobile (web)"
